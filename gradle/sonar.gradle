@@ -1,0 +1,31 @@
+def shouldPublishMetrics() {
+    return new Boolean(publishSonarMetrics);
+}
+
+sonarqube {
+    properties {
+        property "sonar.binaries", "${buildDir}/classes"
+        property "sonar.coverage.exclusions", "**/domain/*"
+        property "sonar.exclusions", "**/src-gen/**,**/domain/*"
+        property "sonar.host.url", "http://sonar.gapinc.dev/"
+        property "sonar.issuesReport.html.enable", "true"
+        property "sonar.issuesReport.html.location", "${project.reporting.baseDir}/sonar"
+        property "sonar.jacoco.itReportPath", "${buildDir}/jacoco/integrationTest.exec"
+        property "sonar.jacoco.reportPath", "${buildDir}/jacoco/test.exec"
+        property "sonar.java.binaries", "build/classes/main"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.java.source", "1.8"
+        property "sonar.junit.reportsPath", "${project.buildDir}/test-results"
+        property "sonar.preview.includePlugins", "buildbreaker,java"
+        property "sonar.projectKey", "plan:allocation:${project.name}"
+        property "sonar.projectName", "plan:allocation:${project.name}"
+
+        if (shouldPublishMetrics()) {
+            property "sonar.analysis.mode", "publish"
+        } else {
+            property "sonar.analysis.mode", "preview"
+            property "sonar.projectDate", "${new Date().next().format("yyyy-MM-dd'T'HH:mm:ssZ")}"
+        }
+
+    }
+}

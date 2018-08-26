@@ -1,0 +1,27 @@
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'ivy-publish'
+
+artifactory {
+
+    contextUrl = 'http://artifactory.gapinc.dev/artifactory'
+    publish {
+        repository {
+            repoKey = 'local-non-prod'
+            username = System.getenv()['ARTIFACTORY_USERNAME']
+            password = System.getenv()['ARTIFACTORY_PASSWORD']
+        }
+        defaults {
+            publications ('targetInventoryPushServiceIvy')
+        }
+    }
+}
+
+publishing {
+    publications {
+        targetInventoryPushServiceIvy(IvyPublication) {
+            from components.java
+        }
+    }
+}
+
+publish.dependsOn artifactoryPublish
